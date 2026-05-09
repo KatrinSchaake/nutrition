@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Katrin Schaake, TIA25  -  Samstag, 02.05.2026, Version: 0.1
+ * Katrin Schaake, TIA25  -  Samstag, 02.05.2026, Version: 0.2
  */
 
 @Data
@@ -14,10 +14,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Product {
 
+	private Long id;
 	private String barcode;
 	private String name;
 	private Brand brand;
-	private int caloriesKcal;	// kcal / 100g
+	private double caloriesKcal;	// kcal / 100g
 	private double protein;			// g / 100g
 	private double carbs;			// g / 100g
 
