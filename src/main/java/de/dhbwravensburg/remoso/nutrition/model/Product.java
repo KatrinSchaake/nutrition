@@ -16,8 +16,8 @@ public class Product {
 
 	private String barcode;
 	private String name;
-	private String brand;
-	private double caloriesKcal;	// kcal / 100g
+	private Brand brand;
+	private int caloriesKcal;	// kcal / 100g
 	private double protein;			// g / 100g
 	private double carbs;			// g / 100g
 
