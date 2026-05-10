@@ -19,6 +19,10 @@ Meal: A meal (e.g., "Fitness BreakfastF") consisting of multiple products
 ConsumptionLog: A diary entry (When did you eat which product/meal 
 and in what quantity?)
 
+### Search for product w/ nutriments
+
+https://world.openfoodfacts.net/api/v2/search?code=4072700802525&fields=product_name,nutriments,brands
+
 ### For multiple searching
 
 https://world.openfoodfacts.org/api/v2/search?code=4072700802525,4003490035305,4002334111496&fields=code,product_name
