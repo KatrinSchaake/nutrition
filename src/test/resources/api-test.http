@@ -1,0 +1,74 @@
+### GET alle Brands (3 als seed)
+GET http://localhost:8080/api/brands
+
+### GET eine Brand byId 2
+GET http://localhost:8080/api/brands/2
+
+### POST neue Brand anlegen
+POST http://localhost:8080/api/brands
+Content-Type: application/json
+
+{ "name": "Müller", "countries": "Deutschland" }
+
+### PUT neue Brand direkt mal updaten
+PUT http://localhost:8080/api/brands/4
+Content-Type: application/json
+
+{ "name": "Müller Milch", "countries": "Deutschland" }
+
+### DELETE Brand
+DELETE http://localhost:8080/api/brands/4
+
+
+### GET alle Produkte
+GET http://localhost:8080/api/products
+
+### GET für Produkte filtern nach Brand
+GET http://localhost:8080/api/products?brandId=2
+
+### GET ein Produkt byId
+GET http://localhost:8080/api/products/1
+
+### POST neues Produkt anlegen
+POST http://localhost:8080/api/products
+Content-Type: application/json
+
+{
+  "barcode": "1234567890",
+  "name": "Joghurt natur",
+  "brandId": 2,
+  "caloriesKcal": 65,
+  "protein": 4.5,
+  "carbs": 5.2
+}
+
+
+### POST Brand Franziskaner anlegen (Id 5)
+POST http://localhost:8080/api/brands
+Content-Type: application/json
+
+{
+"name": "Franziskaner",
+"countries": "Deutschland"
+}
+
+### PUT - Produkt 2 (Butter) komplett ersetzen mit Daten aus Open Food Facts
+### Quelle: https://world.openfoodfacts.net/api/v2/search?code=4072700802525&fields=product_name,nutriments,brands
+### energy-kcal_100g: 21.0 kcal, proteins_100g: 0.6, carbohydrates_100g: 4.4
+PUT http://localhost:8080/api/products/2
+Content-Type: application/json
+
+{
+  "barcode": "4072700802525",
+  "name": "Franziskaner Weissbier Alkoholfrei 0,5 L",
+  "brandId": 5,
+  "caloriesKcal": 21.0,
+  "protein": 0.6,
+  "carbs": 4.4
+}
+
+### GET - Prüfen, ob das Update geklappt hat
+GET http://localhost:8080/api/products/2
+
+### DELETE Produkt
+DELETE http://localhost:8080/api/products/1
