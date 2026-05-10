@@ -1,3 +1,4 @@
+//Brand.java
 package de.dhbwravensburg.remoso.nutrition.model;
 
 import lombok.AllArgsConstructor;

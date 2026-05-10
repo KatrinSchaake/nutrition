@@ -1,3 +1,4 @@
+//ProductService.java
 package de.dhbwravensburg.remoso.nutrition.service;
 
 import java.util.List;
@@ -26,13 +27,13 @@ public class ProductService {
 		this.brandService = brandService;
 
 		// seed data for development
-		Brand Bauer = brandService.findById(2L).orElseThrow();
-		Brand Weihenstephan = brandService.findById(3L).orElseThrow();
+		Brand bauer = brandService.findById(2L).orElseThrow();
+		Brand weihenstephan = brandService.findById(3L).orElseThrow();
 
 		create(new Product(null, "4002334113032", "Der große Bauer - Kirsche",
-				Bauer, 366, 3.2, 12.0));
+				bauer, 366, 3.2, 12.0));
 		create(new Product(null, "4008452010222", "Butter",
-				Weihenstephan, 747, 0.6, 1.0));
+				weihenstephan, 747, 0.6, 1.0));
 	}
 
 	public List<Product> findAll() {
