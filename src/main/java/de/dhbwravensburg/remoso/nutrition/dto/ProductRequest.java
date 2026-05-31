@@ -8,7 +8,7 @@ import de.dhbwravensburg.remoso.nutrition.model.Brand;
 public record ProductRequest(
 		String barcode,
 		String name,
-		Long brandId,	// nur REferenz, nicht die ganze Brand
+		Long brandId,	// nur Referenz, nicht die ganze Brand
 		double caloriesKcal,
 		double protein,
 		double carbs

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,15 +22,17 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+@Entity
 public class Meal {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;            // z.B. "Frühstück" oder "Post-Workout"
-
     private LocalDate date;         // wann wurde die Mahlzeit gegessen?
 
+    @OneToMany(mappedBy = "meal",   // Fremdschlpssel
+            cascade = CascadeType.ALL, orphanRemoval = true)
     // ArrayList, nicht List.of() – wir wollen Items hinzufügen können
     private List<MealItem> items = new ArrayList<>();
 
@@ -59,6 +62,12 @@ public class Meal {
     public double totalProtein() {
         return items.stream()
                 .mapToDouble(MealItem::totalProtein)
+                .sum();
+    }
+
+    public double totalCarbs() {
+        return items.stream()
+                .mapToDouble(MealItem::totalCarbs)
                 .sum();
     }
 }

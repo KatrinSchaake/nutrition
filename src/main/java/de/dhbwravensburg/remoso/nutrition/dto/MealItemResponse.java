@@ -21,6 +21,8 @@ public record MealItemResponse(
 
         double totalCalories,       // bereits berechnet: product.caloriesKcal / 100 * amountGrams
 
-        double totalProtein         // bereits berechnet: product.protein / 100 * amountGrams
+        double totalProtein,         // bereits berechnet: product.protein / 100 * amountGrams
+
+		double totalCarbs
 
 ) {}

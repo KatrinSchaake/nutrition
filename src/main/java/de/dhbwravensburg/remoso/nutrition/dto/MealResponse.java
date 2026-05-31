@@ -33,6 +33,8 @@ public record MealResponse(
 
         double totalCalories,   // Summe aller Items – fertig berechnet
 
-        double totalProtein     // Summe aller Items – fertig berechnet
+        double totalProtein,     // Summe aller Items – fertig berechnet
+
+		double totalCarbs
 
 ) {}

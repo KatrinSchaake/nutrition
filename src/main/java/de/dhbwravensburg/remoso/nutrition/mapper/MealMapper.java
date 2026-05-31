@@ -34,7 +34,8 @@ public final class MealMapper {
                 ProductMapper.toResponse(item.getProduct()),    // verschachtelt
                 item.getAmountGrams(),
                 item.totalCalories(),   // Methode aus dem Model
-                item.totalProtein()     // Methode aus dem Model
+                item.totalProtein(),    // Methode aus dem Model
+                item.totalCarbs()
         );
     }
 
@@ -54,7 +55,8 @@ public final class MealMapper {
                 meal.getDate(),
                 itemResponses,
                 meal.totalCalories(),   // Summe aller Items
-                meal.totalProtein()     // Summe aller Items
+                meal.totalProtein(),     // Summe aller Items
+                meal.totalCarbs()
         );
     }
 }
