@@ -72,3 +72,30 @@ GET http://localhost:8080/api/products/2
 
 ### DELETE Produkt
 DELETE http://localhost:8080/api/products/1
+
+### POST  - neues Frühstück anlegen
+POST http://localhost:8080/api/meals
+Content-Type: application/json
+
+{
+  "category": "Frühstück",
+  "name": "Shake mit Kokosmilch",
+  "items": [
+    { "productId": 1, "amountGrams": 200.0 }
+  ]
+}
+
+### GET Kategorie "Snack"
+GET http://localhost:8080/api/meals/category?category=snack
+
+### GET Namenssuche unvollständig
+GET http://localhost:8080/api/brands/search?name=bau
+
+### GET Suche nach Produkt
+GET http://localhost:8080/api/products/search?name=joghurt
+
+### GET Suche alle Produkte, die "Shake" im Namen haben
+GET http://localhost:8080/api/meals/search?name=shake
+
+### GET Suche nach einer Mahlzeit-Kategorie
+GET http://localhost:8080/api/meals/category?=categoryFrühstück

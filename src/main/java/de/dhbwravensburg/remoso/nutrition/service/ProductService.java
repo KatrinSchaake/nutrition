@@ -1,67 +1,65 @@
-//ProductService.java
 package de.dhbwravensburg.remoso.nutrition.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
 
 import de.dhbwravensburg.remoso.nutrition.model.Brand;
 import de.dhbwravensburg.remoso.nutrition.model.Product;
+import de.dhbwravensburg.remoso.nutrition.repository.ProductRepository;
 
 /**
- * Katrin Schaake, TIA25, Sonntag, 10.05.2026, Version: 0.1
+ * Katrin Schaake, TIA25, Sonnabend, 30.05.2026, Version: 0.2
+ *
+ * Umbau: ConcurrentHashMap zu ProductRepository
+ *
+ * resolveBrand() bleibt - Controller bruacht die Methode weiterhin, um eine
+ * brandId aus Request in eine echte Brand-Entity aufzulösen
  */
 @Service
 public class ProductService {
 
-	private final ConcurrentHashMap<Long, Product> store = new ConcurrentHashMap<>();
-	private final AtomicLong idGenerator = new AtomicLong(1);
-
+	private final ProductRepository repository;
 	private final BrandService brandService;
 
-	public ProductService(BrandService brandService) {
-		// Constructor Injection
+	public ProductService(ProductRepository repository, BrandService brandService) {
+		this.repository = repository;
 		this.brandService = brandService;
-
-		// seed data for development
-		Brand bauer = brandService.findById(2L).orElseThrow();
-		Brand weihenstephan = brandService.findById(3L).orElseThrow();
-
-		create(new Product(null, "4002334113032", "Der große Bauer - Kirsche",
-				bauer, 366, 3.2, 12.0));
-		create(new Product(null, "4008452010222", "Butter",
-				weihenstephan, 747, 0.6, 1.0));
 	}
 
 	public List<Product> findAll() {
-		return List.copyOf(store.values());
+		return repository.findAll();
 	}
 
 	public Optional<Product> findById(Long id) {
-		return Optional.ofNullable(store.get(id));
+		return repository.findById(id);
 	}
 
-	public Product create(Product entity) {
-		Long newId = idGenerator.getAndIncrement();
-		entity.setId(newId);
-		store.put(newId, entity);
-		return entity;
+	public List<Product> findByBrandId(Long brandId) {
+		return repository.findByBrandId(brandId);
 	}
+
+	public List<Product> searchByName(String namePart) {
+		return repository.findByNameIsContainingIgnoreCase(namePart);
+	}
+
+	public Product create(Product entity) { return repository.save(entity); }
 
 	public Optional<Product> update(Long id, Product entity) {
-		if (!store.containsKey(id)) {
+		if (!repository.existsById(id)) {
 			return Optional.empty();
 		}
 		entity.setId(id);
-		store.put(id, entity);
-		return Optional.of(entity);
+		return Optional.of(repository.save(entity));
 	}
 
 	public boolean delete(Long id) {
-		return store.remove(id) != null;
+		if (!repository.existsById(id)) {
+			return false;
+		}
+		repository.deleteById(id);
+		return true;
 	}
 
 	/** Resolves a brandId to an actual Brand entity. Used by the controller befor

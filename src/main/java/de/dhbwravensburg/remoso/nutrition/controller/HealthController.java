@@ -1,4 +1,3 @@
-// HealthController.java
 package de.dhbwravensburg.remoso.nutrition.controller;
 
 import java.util.Map;

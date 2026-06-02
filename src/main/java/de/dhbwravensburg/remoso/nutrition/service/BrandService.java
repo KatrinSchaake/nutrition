@@ -1,4 +1,3 @@
-//BrandService.java
 package de.dhbwravensburg.remoso.nutrition.service;
 
 import java.util.List;
@@ -9,48 +8,56 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Service;
 
 import de.dhbwravensburg.remoso.nutrition.model.Brand;
+import de.dhbwravensburg.remoso.nutrition.repository.BrandRepository;
 
 /**
- * Katrin Schaake, TIA25, Sonntag, 10.05.2026, Version: 0.1
+ * Katrin Schaake, TIA25, Sonntag, 30.05.2026, Version: 0.2
+ *
+ * Umbau: ConcurrentHashMap + AtomicLong raus, Repository rein
+ *
+ * vorher: store.put(id, entity)
+ * nachher: repository.save(entity)
+ *
+ * Seed-Dateien von hier -> in DataInitializer
  */
-@Service // Dependency Injection - Spring erzeugt eine Instanz, wo gebraucht
+@Service				// Dependency Injection - Spring erzeugt eine Instanz, wo gebraucht
 public class BrandService {
 
-	private final ConcurrentHashMap<Long, Brand> store = new ConcurrentHashMap<>();
-	private final AtomicLong idGenerator = new AtomicLong(1);
+	private final BrandRepository repository;	// statt ConcurrecntHashMap
 
-	public BrandService() {
-		// seed data for development - for tests
-		create(new Brand(null, "Olympus", "Griechenland"));
-		create(new Brand(null, "Bauer", "Deutschland"));
-		create(new Brand(null, "Weihenstephan", "Deutschland"));
+	public BrandService(BrandRepository repository) {
+		this.repository = repository;
 	}
 
 	public List<Brand> findAll() {
-		return List.copyOf(store.values());
+		return repository.findAll();
 	}
 
 	public Optional<Brand> findById(Long id) {
-		return Optional.ofNullable(store.get(id));
+		return repository.findById(id);
+	}
+
+	public List<Brand> searchByName(String namePart) {
+		return repository.findByNameContainingIgnoreCase(namePart);
 	}
 
 	public Brand create(Brand entity) {
-		Long newId = idGenerator.getAndIncrement();
-		entity.setId(newId);
-		store.put(newId, entity);
-		return entity;
+		return repository.save(entity);		// JPA vergibt ID automatisch
 	}
 
 	public Optional<Brand> update(Long id, Brand entity) {
-		if (!store.containsKey(id)) {
+		if (!repository.existsById(id)) {
 			return Optional.empty();
 		}
 		entity.setId(id);
-		store.put(id, entity);
-		return Optional.of(entity);
+		return Optional.of(repository.save(entity));
 	}
 
 	public boolean delete(Long id) {
-		return store.remove(id) != null;
+		if (!repository.existsById(id)) {
+			return false;
+		}
+		repository.deleteById(id);
+		return true;
 	}
 }

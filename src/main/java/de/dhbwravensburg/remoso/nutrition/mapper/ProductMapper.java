@@ -1,6 +1,5 @@
 package de.dhbwravensburg.remoso.nutrition.mapper;
 
-import de.dhbwravensburg.remoso.nutrition.dto.BrandResponse;
 import de.dhbwravensburg.remoso.nutrition.dto.ProductRequest;
 import de.dhbwravensburg.remoso.nutrition.dto.ProductResponse;
 import de.dhbwravensburg.remoso.nutrition.model.Brand;
@@ -9,7 +8,7 @@ import de.dhbwravensburg.remoso.nutrition.model.Product;
 /**
  * Katrin Schaake, TIA25, Sonntag, 10.05.2026, Version: 0.1
  */
-public class ProductMapper {
+public final class ProductMapper {
 
 	private ProductMapper() {}
 
@@ -36,5 +35,4 @@ public class ProductMapper {
 				entity.getCarbs()
 		);
 	}
-
 }

@@ -10,14 +10,25 @@ https://world.openfoodfacts.net/api/v2/product/{barcode}
 
 Product: The core entity (date from the API: name, barcode, calories, protein)
 
+Brand  ──< Product
+
 Brand: The brand (a manufacturer can have many products, 
 1:n relationship with Product entity)
+
+Brand  ──< Product >──< Meal
 
 Meal: A meal (e.g., "Fitness BreakfastF") consisting of multiple products 
 (n:m to Product entity)
 
+Meal 1──< MealItem >──1 Product
+
 ConsumptionLog: A diary entry (When did you eat which product/meal 
 and in what quantity?)
+
+Brand  ──< Product      (1:n)   @OneToMany / @ManyToOne
+Product >──< Meal       (n:m)   über MealItem als Zwischentabelle
+Meal   ──< MealItem     (1:n)   @OneToMany / @ManyToOne
+MealItem >──1 Product   (n:1)   @ManyToOne
 
 ### Search for product w/ nutriments
 
