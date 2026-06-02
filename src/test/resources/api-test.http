@@ -98,4 +98,10 @@ GET http://localhost:8080/api/products/search?name=joghurt
 GET http://localhost:8080/api/meals/search?name=shake
 
 ### GET Suche nach einer Mahlzeit-Kategorie
-GET http://localhost:8080/api/meals/category?=categoryFrühstück
+GET http://localhost:8080/api/meals/category?category=Frühstück
+
+### GET extern Data from OpenFoodFacts, nur nachschauen (speichert nichts)
+GET http://localhost:8080/api/barcode/4002334113032
+
+### POST extern Data from OpenFoodFacts, in DB importieren (legt Brand + Product an)
+POST http://localhost:8080/api/barcode/4063367519994/import
