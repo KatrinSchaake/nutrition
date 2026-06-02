@@ -1,4 +1,3 @@
-// MealItemRequest.java
 package de.dhbwravensburg.remoso.nutrition.dto;
 
 /**
@@ -19,7 +18,6 @@ package de.dhbwravensburg.remoso.nutrition.dto;
 public record MealItemRequest(
 
         Long productId,     // Referenz auf das Produkt
-
         double amountGrams  // wie viele Gramm
 
 ) {}

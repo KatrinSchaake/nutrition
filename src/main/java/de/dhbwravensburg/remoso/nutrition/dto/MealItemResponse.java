@@ -1,4 +1,3 @@
-// MealItemResponse.java
 package de.dhbwravensburg.remoso.nutrition.dto;
 
 /**
@@ -14,15 +13,11 @@ package de.dhbwravensburg.remoso.nutrition.dto;
 public record MealItemResponse(
 
         Long id,
-
         ProductResponse product,    // verschachtelt, wie BrandResponse in ProductResponse
-
         double amountGrams,
 
         double totalCalories,       // bereits berechnet: product.caloriesKcal / 100 * amountGrams
-
         double totalProtein,         // bereits berechnet: product.protein / 100 * amountGrams
-
 		double totalCarbs
 
 ) {}

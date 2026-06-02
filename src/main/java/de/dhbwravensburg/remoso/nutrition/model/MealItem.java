@@ -1,4 +1,3 @@
-// MealItem.java
 package de.dhbwravensburg.remoso.nutrition.model;
 
 import jakarta.persistence.Entity;
@@ -8,7 +7,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -25,7 +23,6 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class MealItem {
 
@@ -42,7 +39,15 @@ public class MealItem {
     private Product product;    // welches Produkt
     private double amountGrams; // wie viele Gramm davon
 
-    // ---- berechnete Hilfsmethoden --------------------------------
+    // Konstruktor ohne id und meal
+    // id vergibt JPA automatisch (@GeneratedValue)
+    // meal wird von Meal.addItem() gesetzt (item.setMeal(this))
+    public MealItem(Product product, double amountGrams) {
+        this.product = product;
+        this.amountGrams = amountGrams;
+    }
+
+    // ----berechnete Hilfsmethoden-----
 
     /**
      * Liefern die Kalorien, Eiweiß und Kohlenhydrate dieses Items.

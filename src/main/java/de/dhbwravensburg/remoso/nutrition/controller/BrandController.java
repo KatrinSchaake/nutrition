@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,15 +21,15 @@ import de.dhbwravensburg.remoso.nutrition.model.Brand;
 import de.dhbwravensburg.remoso.nutrition.service.BrandService;
 
 /**
- * Katrin Schaake, TIA25, Sonntag, 10.05.2026, Version: 0.1
+ * Katrin Schaake, TIA25, Sonnabend, 30.05.2026, Version: 0.2
  */
-@RestController		// diese Klasse ist ein REST-Controller, alle Methoden geben JSON
+@RestController								// diese Klasse ist ein REST-Controller, alle Methoden geben JSON
 @RequestMapping("/api/brands")
 public class BrandController {
 
-	private final BrandService service; // ein Feld
+	private final BrandService service;		// ein Feld
 
-	//Konstruktoe mit dem Service als Parameter
+	//Konstruktor mit dem Service als Parameter
 	public BrandController(BrandService service) {
 		this.service = service;
 	}
@@ -42,13 +41,21 @@ public class BrandController {
 				.toList();
 	}
 
-	@GetMapping("/{id}")		// @PathVariable holt Wert aus URL - GET /api/brands/12
-								// -> @PathVariable Long id ergibt id = 12
+	@GetMapping("/{id}")					// @PathVariable holt Wert aus URL - GET /api/brands/12
+											// -> @PathVariable Long id ergibt id = 12
 	public ResponseEntity<BrandResponse> getById(@PathVariable Long id) {
 		return service.findById(id)
 				.map(BrandMapper::toResponse)
-				.map(ResponseEntity::ok)	// wenn was drin ist, pack es in ResponseEntity.ok(...) = 200 OK
+				.map(ResponseEntity::ok)						// wenn was drin, pack es in ResponseEntity.ok(...) = 200 OK
 				.orElse(ResponseEntity.notFound().build());		// wenn leer, gib 404 zurück
+	}
+
+	//GET /api/brands/search?name=bau		-> findet "Bauer"
+	@GetMapping("/search")
+	public List<BrandResponse> searchByName(@RequestParam String name) {
+		return service.searchByName(name).stream()
+				.map(BrandMapper::toResponse)
+				.toList();
 	}
 
 	@PostMapping
@@ -56,11 +63,10 @@ public class BrandController {
 								// JSON-Body in Java-object - Spring-Magic
 
 		Brand created = service.create(BrandMapper.toEntity(null, request));
-
 		BrandResponse response = BrandMapper.toResponse(created);
 
 		return ResponseEntity.created(URI.create("/api/brands/" + created.getId())).body(response);
-				// setzt Statuscode 201 Created + Location-Header				packt Response-DTO als JSON in body
+				// setzt Statuscode 201 Created + Location-Header		->	Response-DTO als JSON in body
 	}
 
 	@PutMapping("/{id}")
@@ -69,15 +75,15 @@ public class BrandController {
 
 		return service.update(id, BrandMapper.toEntity(id, request))
 				.map(BrandMapper::toResponse)
-				.map(ResponseEntity::ok) // 200
-				.orElse(ResponseEntity.notFound().build()); // 404
+				.map(ResponseEntity::ok)					// 200
+				.orElse(ResponseEntity.notFound().build());	// 404
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		if (service.delete(id)) {
-			return ResponseEntity.noContent().build(); // 204
+			return ResponseEntity.noContent().build();		// 204
 		}
-		return ResponseEntity.notFound().build(); // 404
+		return ResponseEntity.notFound().build();			// 404
 	}
 }

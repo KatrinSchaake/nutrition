@@ -1,18 +1,19 @@
-// MealRequest.java
 package de.dhbwravensburg.remoso.nutrition.dto;
 
-import java.time.LocalDate;
 import java.util.List;
 
 /**
- * Katrin Schaake, TIA25 – Version: 0.1
+ * Katrin Schaake, TIA25 – Version: 0.2
  *
  * DTO für eingehende Mahlzeiten-Daten (POST/PUT).
  *
+ * ohne lastModified hier, wird von JPA automatisch gesetzt
+ * Client schickt nur category, name und die Items
+ *
  * Beispiel-JSON:
  * {
- *   "name": "Frühstück",
- *   "date": "2026-05-28",
+ *	 "category": "Frühstück",
+ *   "name": "Shake mit Naturjoghurt",
  *   "items": [
  *     { "productId": 1, "amountGrams": 200.0 },
  *     { "productId": 2, "amountGrams": 150.0 }
@@ -21,9 +22,8 @@ import java.util.List;
  */
 public record MealRequest(
 
-        String name,
-
-        LocalDate date,
+        String category,
+		String name,
 
         List<MealItemRequest> items  // Liste der Produkte + Mengen
 

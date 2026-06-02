@@ -1,5 +1,6 @@
-// BrandRepository.java
 package de.dhbwravensburg.remoso.nutrition.repository;
+
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -21,4 +22,9 @@ import de.dhbwravensburg.remoso.nutrition.model.Brand;
  *   findAll(), findById(id), save(entity), deleteById(id), count(), existsById(id) ...
  */
 public interface BrandRepository extends JpaRepository<Brand, Long> {
+
+	// Suche nach Name (Teilstring, case-insensitive)
+	// "bau" findet "Bauer", "Braubauer" etc.
+	// Spring baut: SELECT * FROM brand WHERE LOWER(name) LIKE LOWER('%bau%')
+	List<Brand> findByNameContainingIgnoreCase(String namePart);
 }

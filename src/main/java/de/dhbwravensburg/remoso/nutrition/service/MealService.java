@@ -1,11 +1,7 @@
-// MealService.java
 package de.dhbwravensburg.remoso.nutrition.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
 
@@ -14,9 +10,10 @@ import de.dhbwravensburg.remoso.nutrition.dto.MealRequest;
 import de.dhbwravensburg.remoso.nutrition.model.Meal;
 import de.dhbwravensburg.remoso.nutrition.model.MealItem;
 import de.dhbwravensburg.remoso.nutrition.model.Product;
+import de.dhbwravensburg.remoso.nutrition.repository.MealRepository;
 
 /**
- * Katrin Schaake, TIA25 – Version: 0.1
+ * Katrin Schaake, TIA25 – Version: 0.3
  *
  * Service für Mahlzeiten.
  *
@@ -32,41 +29,32 @@ import de.dhbwravensburg.remoso.nutrition.model.Product;
 @Service
 public class MealService {
 
-    private final ConcurrentHashMap<Long, Meal> store = new ConcurrentHashMap<>();
-    private final AtomicLong mealIdGenerator = new AtomicLong(1);
-    private final AtomicLong itemIdGenerator = new AtomicLong(1);
-
+    private final MealRepository repository;
     private final ProductService productService;    // brauchen wir zum Auflösen der productIds
 
-    public MealService(ProductService productService) {
+    public MealService(MealRepository repository, ProductService productService) {
+        this.repository = repository;
         this.productService = productService;
-
-        // ---- Seed-Daten: eine Beispiel-Mahlzeit anlegen ----------------
-        // Wir prüfen erst, ob die Produkte existieren (IDs 1 und 2 aus ProductService-Seed)
-        productService.findById(1L).ifPresent(p1 ->
-                productService.findById(2L).ifPresent(p2 -> {
-
-                    MealRequest breakfast = new MealRequest(
-                            "Frühstück",
-                            java.time.LocalDate.of(2026, 5, 28),
-                            List.of(
-                                    new MealItemRequest(1L, 150.0),   // 150g Bauer Kirsche
-                                    new MealItemRequest(2L, 30.0)     // 30g Butter
-                            )
-                    );
-                    create(breakfast);
-                })
-        );
     }
 
-    // ---- CRUD ----------------------------------------------------------
+    // -----CRUD-----
 
     public List<Meal> findAll() {
-        return List.copyOf(store.values());
+        return repository.findAll();
     }
 
     public Optional<Meal> findById(Long id) {
-        return Optional.ofNullable(store.get(id));
+        return repository.findById(id);
+    }
+
+    // alle Mahlzeiten einer Kategorie (z.B. alle Frühstücke)
+    public List<Meal> findByCategory(String category) {
+        return repository.findByCategoryIgnoreCase(category);
+    }
+
+    // Mahlzeiten nach Name suchen (Teilstring)
+    public List<Meal> searchByName(String namePart) {
+        return repository.findByNameContainingIgnoreCase(namePart);
     }
 
     /**
@@ -85,14 +73,12 @@ public class MealService {
      */
     public Meal create(MealRequest request) {
 
-        Long newMealId = mealIdGenerator.getAndIncrement();
-        Meal meal = new Meal(newMealId, request.name(), request.date());
+        Meal meal = new Meal(request.category(), request.name());
+        // lastModified automatisch von @PrePersist gesetzt
 
-        List<MealItem> items = buildItems(request.items());
-        meal.setItems(items);
+        addItemsToMeal(meal, request.items());
 
-        store.put(newMealId, meal);
-        return meal;
+        return repository.save(meal);
     }
 
     /**
@@ -100,44 +86,44 @@ public class MealService {
      * Gibt Optional.empty() zurück, wenn die ID nicht existiert.
      */
     public Optional<Meal> update(Long id, MealRequest request) {
-        if (!store.containsKey(id)) {
-            return Optional.empty();
-        }
 
-        Meal meal = new Meal(id, request.name(), request.date());
-        List<MealItem> items = buildItems(request.items());
-        meal.setItems(items);
+        return repository.findById(id).map(existing -> {
 
-        store.put(id, meal);
-        return Optional.of(meal);
+            existing.setCategory(request.category());
+            existing.setName(request.name());
+
+            existing.getItems().clear();
+            addItemsToMeal(existing, request.items());
+
+            return repository.save(existing);
+        });
     }
 
     public boolean delete(Long id) {
-        return store.remove(id) != null;
+        if (!repository.existsById(id)) {
+            return false;
+        }
+        repository.deleteById(id);
+        return true;
+
     }
 
     // ---- private Hilfsmethode ------------------------------------------
-
     /**
      * Baut aus einer Liste von MealItemRequests eine Liste von MealItems.
      * Items mit unbekannter productId werden still übersprungen.
      */
-    private List<MealItem> buildItems(List<MealItemRequest> itemRequests) {
+    private void addItemsToMeal(Meal meal, List<MealItemRequest> itemRequests) {
         if (itemRequests == null) {
-            return new ArrayList<>();
+            return;
         }
-
-        List<MealItem> items = new ArrayList<>();
         for (MealItemRequest itemRequest : itemRequests) {
 
-            // productId -> echte Product-Entity auflösen
             Optional<Product> productOpt = productService.findById(itemRequest.productId());
-
             productOpt.ifPresent(product -> {
-                Long itemId = itemIdGenerator.getAndIncrement();
-                items.add(new MealItem(itemId, product, itemRequest.amountGrams()));
+                MealItem item = new MealItem(product, itemRequest.amountGrams());
+                meal.addItem(item);
             });
         }
-        return items;
     }
 }

@@ -1,7 +1,6 @@
-// MealResponse.java
 package de.dhbwravensburg.remoso.nutrition.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -24,17 +23,12 @@ import java.util.List;
 public record MealResponse(
 
         Long id,
-
+		String category,
         String name,
-
-        LocalDate date,
-
+        LocalDateTime lastModified,
         List<MealItemResponse> items,
 
         double totalCalories,   // Summe aller Items – fertig berechnet
-
         double totalProtein,     // Summe aller Items – fertig berechnet
-
 		double totalCarbs
-
 ) {}

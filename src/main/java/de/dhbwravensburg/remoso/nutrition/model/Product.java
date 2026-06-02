@@ -1,4 +1,3 @@
-//Product.java
 package de.dhbwravensburg.remoso.nutrition.model;
 
 import jakarta.persistence.Entity;

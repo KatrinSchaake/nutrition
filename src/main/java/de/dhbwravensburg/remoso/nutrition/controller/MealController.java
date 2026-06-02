@@ -1,4 +1,3 @@
-// MealController.java
 package de.dhbwravensburg.remoso.nutrition.controller;
 
 import java.net.URI;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.dhbwravensburg.remoso.nutrition.dto.MealRequest;
@@ -21,13 +21,15 @@ import de.dhbwravensburg.remoso.nutrition.model.Meal;
 import de.dhbwravensburg.remoso.nutrition.service.MealService;
 
 /**
- * Katrin Schaake, TIA25 – Version: 0.1
+ * Katrin Schaake, TIA25 – Version: 0.2
  *
  * REST-Controller für Mahlzeiten.
  *
  * Endpunkte:
  *   GET    /api/meals          -> alle Mahlzeiten
  *   GET    /api/meals/{id}     -> eine Mahlzeit mit berechneten Nährwerten
+ *   GET    /api/meals/category -> alle Mahlzeiten aus der Kategorie
+ *   GET    /api/meals/search   -> alle Mahlzeiten, die Suche enthalten
  *   POST   /api/meals          -> neue Mahlzeit anlegen
  *   PUT    /api/meals/{id}     -> Mahlzeit komplett ersetzen
  *   DELETE /api/meals/{id}     -> Mahlzeit löschen
@@ -66,13 +68,28 @@ public class MealController {
                 .orElse(ResponseEntity.notFound().build());     // 404 Not Found
     }
 
+    @GetMapping("/category")
+    public List<MealResponse> findByCategory(@RequestParam String category) {
+        return service.findByCategory(category).stream()
+                .map(MealMapper::toResponse)
+                .toList();
+    }
+
+    @GetMapping("/search")
+    public List<MealResponse> searchByName(@RequestParam String name) {
+        return service.searchByName(name).stream()
+                .map(MealMapper::toResponse)
+                .toList();
+    }
+
+
     // POST /api/meals
     // Body-Beispiel:
     // {
-    //   "name": "Mittagessen",
-    //   "date": "2026-05-28",
+    //   "category": "Mittagessen",
+    //   "name": "Nudeln mit Hackfleischsoße",
     //   "items": [
-    //     { "productId": 1, "amountGrams": 200.0 }
+    //     { "productId": 1, "amountGrams": 150.0 }
     //   ]
     // }
     @PostMapping

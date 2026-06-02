@@ -1,4 +1,3 @@
-// MealMapper.java
 package de.dhbwravensburg.remoso.nutrition.mapper;
 
 import java.util.List;
@@ -9,7 +8,7 @@ import de.dhbwravensburg.remoso.nutrition.model.Meal;
 import de.dhbwravensburg.remoso.nutrition.model.MealItem;
 
 /**
- * Katrin Schaake, TIA25 – Version: 0.1
+ * Katrin Schaake, TIA25 – Version: 0.2
  *
  * Mapper: wandelt Meal/MealItem (Model) in Response-DTOs um.
  *
@@ -25,7 +24,7 @@ public final class MealMapper {
 
     /**
      * Wandelt ein MealItem in ein MealItemResponse um.
-     * Dabei werden die berechneten Werte (totalCalories, totalProtein)
+     * Dabei werden die berechneten Werte (totalCalories, totalProtein etc.)
      * direkt aus dem Model-Objekt geholt – MealItem kann das selbst rechnen.
      */
     public static MealItemResponse toItemResponse(MealItem item) {
@@ -51,11 +50,12 @@ public final class MealMapper {
 
         return new MealResponse(
                 meal.getId(),
+                meal.getCategory(),
                 meal.getName(),
-                meal.getDate(),
+                meal.getLastModified(),     // automatisch von JPA gesetzt
                 itemResponses,
-                meal.totalCalories(),   // Summe aller Items
-                meal.totalProtein(),     // Summe aller Items
+                meal.totalCalories(),       // Summe aller Items
+                meal.totalProtein(),
                 meal.totalCarbs()
         );
     }

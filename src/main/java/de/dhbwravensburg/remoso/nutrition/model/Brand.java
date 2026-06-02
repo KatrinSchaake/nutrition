@@ -1,4 +1,3 @@
-//Brand.java
 package de.dhbwravensburg.remoso.nutrition.model;
 
 import jakarta.persistence.Entity;
@@ -26,5 +25,4 @@ public class Brand {
 
 	private String name;
 	private String countries;  //in API also countries instead of country
-
 }

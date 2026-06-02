@@ -1,4 +1,3 @@
-// ProductRepository.java
 package de.dhbwravensburg.remoso.nutrition.repository;
 
 import java.util.List;
@@ -9,12 +8,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import de.dhbwravensburg.remoso.nutrition.model.Product;
 
 /**
- * Katrin Schaake, TIA25 – Version: 0.1
+ * Katrin Schaake, TIA25 – Version: 0.2
  *
  * Repository für Product.
  *
- * Zusätzlich zu den Standard-CRUD-Methoden definieren wir hier
- * "Derived Queries": Spring liest den Methodennamen und baut das SQL daraus.
+ * Zusätzlich zu den Standard-CRUD-Methoden + "Derived Queries": Spring liest den Methodennamen u. baut das SQL
  *
  * Beispiel findByBrandId:
  *   Spring sieht "findBy" + "Brand" + "Id" und macht daraus:
@@ -34,4 +32,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // ein Produkt per Barcode finden
     Optional<Product> findByBarcode(String barcode);
+
+    // Suche nach Name (Teilstring, case-insensitive), "joghurt" findet "Kirschjoghurt", "Joghurt Natur" etc.
+    List<Product> findByNameIsContainingIgnoreCase(String namePart);
 }
