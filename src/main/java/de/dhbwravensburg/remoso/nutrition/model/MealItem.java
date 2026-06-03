@@ -56,10 +56,8 @@ public class MealItem {
     public double totalCalories() {
         return product.getCaloriesKcal() / 100.0 * amountGrams;
     }
-
     public double totalProtein() {
         return product.getProtein() / 100.0 * amountGrams;
     }
-
     public double totalCarbs() {return product.getCarbs() / 100.0 * amountGrams;}
 }
