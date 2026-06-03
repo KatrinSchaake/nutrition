@@ -3,6 +3,7 @@ package de.dhbwravensburg.remoso.nutrition.controller;
 import java.net.URI;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.dhbwravensburg.remoso.nutrition.dto.BrandRequest;
@@ -21,7 +23,10 @@ import de.dhbwravensburg.remoso.nutrition.model.Brand;
 import de.dhbwravensburg.remoso.nutrition.service.BrandService;
 
 /**
- * Katrin Schaake, TIA25, Sonnabend, 30.05.2026, Version: 0.2
+ * Katrin Schaake, TIA25, Sonnabend, 30.05.2026, Version: 0.3
+ *
+ * Controller gibt keine 404 selbst zurück -> GlobalExceptionHandler, wenn Service
+ * eine ResourceNotFoundException wirft
  */
 @RestController								// diese Klasse ist ein REST-Controller, alle Methoden geben JSON
 @RequestMapping("/api/brands")
@@ -73,17 +78,14 @@ public class BrandController {
 	public ResponseEntity<BrandResponse> update(@PathVariable Long id,
 			@RequestBody BrandRequest request) {
 
-		return service.update(id, BrandMapper.toEntity(id, request))
-				.map(BrandMapper::toResponse)
-				.map(ResponseEntity::ok)					// 200
-				.orElse(ResponseEntity.notFound().build());	// 404
+		Brand updated = service.update(id, BrandMapper.toEntity(id, request));
+		return ResponseEntity.ok(BrandMapper.toResponse(updated));
 	}
 
+	// Service wirft 404 oder 409 - Controller macht nur Aufruf
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> delete(@PathVariable Long id) {
-		if (service.delete(id)) {
-			return ResponseEntity.noContent().build();		// 204
-		}
-		return ResponseEntity.notFound().build();			// 404
+	@ResponseStatus(HttpStatus.NO_CONTENT)			//204 wenn alles klappt
+	public void delete(@PathVariable Long id) {
+		service.delete(id);
 	}
 }

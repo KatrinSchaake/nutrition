@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import de.dhbwravensburg.remoso.nutrition.dto.MealItemRequest;
 import de.dhbwravensburg.remoso.nutrition.dto.MealRequest;
+import de.dhbwravensburg.remoso.nutrition.exception.ResourceNotFoundException;
 import de.dhbwravensburg.remoso.nutrition.model.Meal;
 import de.dhbwravensburg.remoso.nutrition.model.MealItem;
 import de.dhbwravensburg.remoso.nutrition.model.Product;
@@ -85,27 +86,23 @@ public class MealService {
      * Ersetzt eine bestehende Mahlzeit komplett (PUT-Semantik).
      * Gibt Optional.empty() zurück, wenn die ID nicht existiert.
      */
-    public Optional<Meal> update(Long id, MealRequest request) {
+    public Meal update(Long id, MealRequest request) {
+        Meal existing = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Meal", id));
 
-        return repository.findById(id).map(existing -> {
+        existing.setCategory(request.category());
+        existing.setName(request.name());
+        existing.getItems().clear();
+        addItemsToMeal(existing, request.items());
 
-            existing.setCategory(request.category());
-            existing.setName(request.name());
-
-            existing.getItems().clear();
-            addItemsToMeal(existing, request.items());
-
-            return repository.save(existing);
-        });
+        return repository.save(existing);
     }
 
-    public boolean delete(Long id) {
+    public void delete(Long id) {
         if (!repository.existsById(id)) {
-            return false;
+            throw new ResourceNotFoundException("Meal", id);       // 404
         }
         repository.deleteById(id);
-        return true;
-
     }
 
     // ---- private Hilfsmethode ------------------------------------------
@@ -120,6 +117,7 @@ public class MealService {
         for (MealItemRequest itemRequest : itemRequests) {
 
             Optional<Product> productOpt = productService.findById(itemRequest.productId());
+
             productOpt.ifPresent(product -> {
                 MealItem item = new MealItem(product, itemRequest.amountGrams());
                 meal.addItem(item);

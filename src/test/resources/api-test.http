@@ -105,3 +105,12 @@ GET http://localhost:8080/api/barcode/4002334113032
 
 ### POST extern Data from OpenFoodFacts, in DB importieren (legt Brand + Product an)
 POST http://localhost:8080/api/barcode/4063367519994/import
+
+### DELETE sollte 404 mit "Brand with id 999 not found" geben
+DELETE http://localhost:8080/api/brands/999
+
+### DELETE sollte 204 geben (Meal hat keine Abhängigkeiten)
+DELETE http://localhost:8080/api/meals/1
+
+### DELETE sollte 409 mit "still referenced by products" geben
+DELETE http://localhost:8080/api/brands/2

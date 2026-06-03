@@ -4,11 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import de.dhbwravensburg.remoso.nutrition.model.Product;
 
 /**
- * Katrin Schaake, TIA25 – Version: 0.2
+ * Katrin Schaake, TIA25 – Version: 0.3
  *
  * Repository für Product.
  *
@@ -35,4 +36,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // Suche nach Name (Teilstring, case-insensitive), "joghurt" findet "Kirschjoghurt", "Joghurt Natur" etc.
     List<Product> findByNameIsContainingIgnoreCase(String namePart);
+
+    // zahlt wie viele MealItems dieses Produkt referenzieren
+    @Query("SELECT COUNT(mi) FROM MealItem mi WHERE mi.product.id = :productId")
+    long countMealItemsByProductId(Long productId);
 }

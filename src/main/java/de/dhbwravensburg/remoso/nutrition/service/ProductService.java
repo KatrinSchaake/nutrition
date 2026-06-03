@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import de.dhbwravensburg.remoso.nutrition.exception.ResourceInUseException;
+import de.dhbwravensburg.remoso.nutrition.exception.ResourceNotFoundException;
 import de.dhbwravensburg.remoso.nutrition.model.Brand;
 import de.dhbwravensburg.remoso.nutrition.model.Product;
 import de.dhbwravensburg.remoso.nutrition.repository.ProductRepository;
@@ -46,25 +48,27 @@ public class ProductService {
 
 	public Product create(Product entity) { return repository.save(entity); }
 
-	public Optional<Product> update(Long id, Product entity) {
+	public Product update(Long id, Product entity) {
 		if (!repository.existsById(id)) {
-			return Optional.empty();
+			throw new ResourceNotFoundException("Product", id);
 		}
 		entity.setId(id);
-		return Optional.of(repository.save(entity));
+		return repository.save(entity);
 	}
 
-	public boolean delete(Long id) {
+	public void delete(Long id) {
 		if (!repository.existsById(id)) {
-			return false;
+			throw new ResourceNotFoundException("Product", id);
 		}
+
+		// Prüfen ob das Produkt in Mahlzeiten verwendet wird
+		if (repository.countMealItemsByProductId(id) > 0) {
+			throw new ResourceInUseException("Product", id, "meals");
+		}
+
 		repository.deleteById(id);
-		return true;
 	}
 
-	/** Resolves a brandId to an actual Brand entity. Used by the controller befor
-	 * mapping a ProductRequest to a Product
-	 */
 	public Optional<Brand> resolveBrand(Long brandId) {
 		if (brandId == null) {
 			return Optional.empty();
