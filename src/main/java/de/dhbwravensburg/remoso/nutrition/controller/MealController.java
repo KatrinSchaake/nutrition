@@ -3,6 +3,7 @@ package de.dhbwravensburg.remoso.nutrition.controller;
 import java.net.URI;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.dhbwravensburg.remoso.nutrition.dto.MealRequest;
@@ -82,7 +84,6 @@ public class MealController {
                 .toList();
     }
 
-
     // POST /api/meals
     // Body-Beispiel:
     // {
@@ -95,11 +96,11 @@ public class MealController {
     @PostMapping
     public ResponseEntity<MealResponse> create(@RequestBody MealRequest request) {
 
-        Meal created = service.create(request);     // Service baut die Entity inkl. Items
+        Meal created = service.create(request);
         MealResponse response = MealMapper.toResponse(created);
 
         return ResponseEntity
-                .created(URI.create("/api/meals/" + created.getId()))  // 201 + Location-Header
+                .created(URI.create("/api/meals/" + created.getId()))
                 .body(response);
     }
 
@@ -109,18 +110,14 @@ public class MealController {
             @PathVariable Long id,
             @RequestBody MealRequest request) {
 
-        return service.update(id, request)
-                .map(MealMapper::toResponse)
-                .map(ResponseEntity::ok)                        // 200 OK
-                .orElse(ResponseEntity.notFound().build());     // 404 Not Found
+        Meal updated = service.update(id, request);
+        return ResponseEntity.ok(MealMapper.toResponse(updated));
     }
 
     // DELETE /api/meals/1
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (service.delete(id)) {
-            return ResponseEntity.noContent().build();  // 204 No Content
-        }
-        return ResponseEntity.notFound().build();       // 404 Not Found
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        service.delete(id);
     }
 }

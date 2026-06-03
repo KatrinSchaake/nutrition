@@ -22,7 +22,6 @@ public class Brand {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 						// hier ohne @OneToMany - schon in ProductRepository.findByBrandID()
 	private Long id;	// Long instead of int - no primitive data type, null available
-
 	private String name;
 	private String countries;  //in API also countries instead of country
 }
