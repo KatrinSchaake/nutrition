@@ -2,6 +2,10 @@ package de.dhbwravensburg.remoso.nutrition.dto;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+
 /**
  * Katrin Schaake, TIA25 – Version: 0.2
  *
@@ -22,9 +26,11 @@ import java.util.List;
  */
 public record MealRequest(
 
-        String category,
-		String name,
+        @NotBlank(message = "Name for meal category is required") String category,
+		@NotBlank(message = "Meal name is required") String name,
 
-        List<MealItemRequest> items  // Liste der Produkte + Mengen
+        @NotEmpty
+		@Valid
+		List<MealItemRequest> items  // Liste der Produkte + Mengen
 
 ) {}

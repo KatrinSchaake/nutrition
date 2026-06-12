@@ -21,6 +21,7 @@ import de.dhbwravensburg.remoso.nutrition.dto.BrandResponse;
 import de.dhbwravensburg.remoso.nutrition.mapper.BrandMapper;
 import de.dhbwravensburg.remoso.nutrition.model.Brand;
 import de.dhbwravensburg.remoso.nutrition.service.BrandService;
+import jakarta.validation.Valid;
 
 /**
  * Katrin Schaake, TIA25, Sonnabend, 30.05.2026, Version: 0.3
@@ -64,8 +65,8 @@ public class BrandController {
 	}
 
 	@PostMapping
-	public ResponseEntity<BrandResponse> create(@RequestBody BrandRequest request) {
-								// JSON-Body in Java-object - Spring-Magic
+	public ResponseEntity<BrandResponse> create(@Valid @RequestBody BrandRequest request) {
+								// JSON-Body in Java-object - Spring-Magic, sonst wirkt das nicht aus den DTOs
 
 		Brand created = service.create(BrandMapper.toEntity(null, request));
 		BrandResponse response = BrandMapper.toResponse(created);
@@ -76,7 +77,7 @@ public class BrandController {
 
 	@PutMapping("/{id}")
 	public ResponseEntity<BrandResponse> update(@PathVariable Long id,
-			@RequestBody BrandRequest request) {
+			@Valid @RequestBody BrandRequest request) {
 
 		Brand updated = service.update(id, BrandMapper.toEntity(id, request));
 		return ResponseEntity.ok(BrandMapper.toResponse(updated));

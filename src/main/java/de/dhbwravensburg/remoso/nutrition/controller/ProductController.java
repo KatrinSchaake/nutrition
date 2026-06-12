@@ -22,6 +22,7 @@ import de.dhbwravensburg.remoso.nutrition.mapper.ProductMapper;
 import de.dhbwravensburg.remoso.nutrition.model.Brand;
 import de.dhbwravensburg.remoso.nutrition.model.Product;
 import de.dhbwravensburg.remoso.nutrition.service.ProductService;
+import jakarta.validation.Valid;
 
 /**
  * Katrin Schaake, TIA25  -  Sonnabend, 30.05.2026, Version: 0.4
@@ -70,7 +71,7 @@ public class ProductController {
 	}
 
 	@PostMapping
-	public ResponseEntity<ProductResponse> create(@RequestBody ProductRequest request) {
+	public ResponseEntity<ProductResponse> create(@Valid @RequestBody ProductRequest request) {
 
 		// brandId aus Request zur echten Brand-Entity auflösen
 		Brand brand = service.resolveBrand(request.brandId()).orElse(null);
@@ -82,7 +83,7 @@ public class ProductController {
 
 	@PutMapping("/{id}")
 	public ResponseEntity<ProductResponse> update(@PathVariable Long id,
-			@RequestBody ProductRequest request) {
+			@Valid @RequestBody ProductRequest request) {
 
 		Brand brand = service.resolveBrand(request.brandId()).orElse(null);
 		Product updated = service.update(id, ProductMapper.toEntity(id, request, brand));
