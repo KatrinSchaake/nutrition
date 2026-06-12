@@ -114,3 +114,34 @@ DELETE http://localhost:8080/api/meals/1
 
 ### DELETE sollte 409 mit "still referenced by products" geben
 DELETE http://localhost:8080/api/brands/2
+
+### POST Validation-Test Brand (400)
+POST http://localhost:8080/api/brands
+Content-Type: application/json
+
+{"name":  "", "countries": "Deutschland"}
+
+### POST Validation-Test Product (400)
+POST localhost:8080/api/products
+Content-Type: application/json
+
+{"barcode": "12332", "name": "Test", "caloriesKcal": -50,
+  "protein": 7.9, "carbs": 0}
+
+### POST Validation-Test Meals (400)
+POST localhost:8080/api/meals
+Content-Type: application/json
+
+{"category": "Snack", "name": "Leer", "items": []}
+
+### POST Validation-Test Meals (400)
+POST localhost:8080/api/meals
+Content-Type: application/json
+
+{"category": "Frühstück", "name": "Müsli", "items": [{"amountGrams":  120}]}
+
+### POST Validation-Test Meals (201)
+POST localhost:8080/api/meals
+Content-Type: application/json
+
+{"category": "Frühstück", "name": "Joghurt", "items": [{"productId": 2, "amountGrams": 135}]}
