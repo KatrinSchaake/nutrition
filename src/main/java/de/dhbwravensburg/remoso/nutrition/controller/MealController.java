@@ -21,6 +21,7 @@ import de.dhbwravensburg.remoso.nutrition.dto.MealResponse;
 import de.dhbwravensburg.remoso.nutrition.mapper.MealMapper;
 import de.dhbwravensburg.remoso.nutrition.model.Meal;
 import de.dhbwravensburg.remoso.nutrition.service.MealService;
+import jakarta.validation.Valid;
 
 /**
  * Katrin Schaake, TIA25 – Version: 0.2
@@ -94,7 +95,7 @@ public class MealController {
     //   ]
     // }
     @PostMapping
-    public ResponseEntity<MealResponse> create(@RequestBody MealRequest request) {
+    public ResponseEntity<MealResponse> create(@Valid @RequestBody MealRequest request) {
 
         Meal created = service.create(request);
         MealResponse response = MealMapper.toResponse(created);
@@ -108,7 +109,7 @@ public class MealController {
     @PutMapping("/{id}")
     public ResponseEntity<MealResponse> update(
             @PathVariable Long id,
-            @RequestBody MealRequest request) {
+            @Valid @RequestBody MealRequest request) {
 
         Meal updated = service.update(id, request);
         return ResponseEntity.ok(MealMapper.toResponse(updated));

@@ -1,5 +1,9 @@
 package de.dhbwravensburg.remoso.nutrition.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+
 /**
  * Katrin Schaake, TIA25 – Version: 0.1
  *
@@ -17,7 +21,7 @@ package de.dhbwravensburg.remoso.nutrition.dto;
  */
 public record MealItemRequest(
 
-        Long productId,     // Referenz auf das Produkt
-        double amountGrams  // wie viele Gramm
+		@NotNull Long productId,     // Referenz auf das Produkt
+        @Positive Double amountGrams  // wie viele Gramm
 
 ) {}

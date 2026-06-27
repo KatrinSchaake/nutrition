@@ -66,7 +66,7 @@ public class BrandController {
 
 	@PostMapping
 	public ResponseEntity<BrandResponse> create(@Valid @RequestBody BrandRequest request) {
-								// JSON-Body in Java-object - Spring-Magic
+								// JSON-Body in Java-object - Spring-Magic, sonst wirkt das nicht aus den DTOs
 
 		Brand created = service.create(BrandMapper.toEntity(null, request));
 		BrandResponse response = BrandMapper.toResponse(created);
