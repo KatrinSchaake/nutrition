@@ -5,6 +5,7 @@ import MealList from './components/MealList'
 import MealDetail from './components/MealDetail'
 import MealForm from './components/MealForm'
 import BarcodeImport from './components/BarcodeImport'
+import ProductForm from './components/ProductForm'
 import './App.css'
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
             </header>
             <main>
                 <BarcodeImport onImported={handleImport} />
+                <ProductForm onCreated={handleCreated} />
                 <MealForm onCreated={handleCreated} productRefreshKey={productRefreshKey} />
 
                 <h2>Meine Mahlzeiten</h2>

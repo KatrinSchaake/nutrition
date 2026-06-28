@@ -1,4 +1,4 @@
-import type { Meal, Product, MealInput } from '../types'
+import type { Meal, Product, MealInput, ProductInput } from '../types'
 
 const BASE = '/api'
 
@@ -30,6 +30,14 @@ export function createMeal(meal: MealInput): Promise<Meal> {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(meal),
     }).then((res) => handle<Meal>(res))
+}
+// neues Produkt manuell anlegen
+export function createProduct(input: ProductInput): Promise<Product> {
+    return fetch(`${BASE}/products`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input),
+    }).then((res) => handle<Product>(res))
 }
 
 // Produkt bei Open Food Facts nachschlagen (ohne Speichern)
