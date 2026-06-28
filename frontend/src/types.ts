@@ -18,7 +18,7 @@ export interface Brand {
 export interface MealItem {
     id: number
     product: Product
-    amount: number
+    amountGrams: number
     totalCalories: number
     totalProtein: number
     totalCarbs: number
