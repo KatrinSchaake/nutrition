@@ -1,4 +1,4 @@
-import type { Meal} from "../types.ts"
+import type { Meal, Product, MealInput } from '../types'
 
 const BASE = '/api'
 
@@ -16,4 +16,18 @@ export function getMeals(): Promise<Meal[]> {
 // eine einzelne Mahlzeit laden
 export function getMeal(id: number): Promise<Meal> {
     return fetch(`${BASE}/meals/${id}`).then((res) => handle<Meal>(res))
+}
+
+// Alle Produkte laden (für die Auswahl im Formular)
+export function getProducts(): Promise<Product[]> {
+    return fetch(`${BASE}/products`).then((res) => handle<Product[]>(res))
+}
+
+// Eine neue Mahlzeit anlegen
+export function createMeal(meal: MealInput): Promise<Meal> {
+    return fetch(`${BASE}/meals`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(meal),
+    }).then((res) => handle<Meal>(res))
 }

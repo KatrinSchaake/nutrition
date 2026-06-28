@@ -34,3 +34,14 @@ export interface Meal {
     totalProtein: number
     totalCarbs: number
 }
+
+// Was das Formular ans Backend schickt (entspricht MealRequest)
+export interface MealItemInput {
+    productId: number
+    amountGrams: number
+}
+export interface MealInput {
+    category: string
+    name: string
+    items: MealItemInput[]
+}

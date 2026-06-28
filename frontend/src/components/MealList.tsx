@@ -4,9 +4,10 @@ import { getMeals } from "../api/nutritionApi"
 
 type MealListProps = {
     onSelect: (id: number) => void
+    refreshKey: number
 }
 
-function MealList({ onSelect }: MealListProps) {
+function MealList({ onSelect, refreshKey }: MealListProps) {
     const [meals, setMeals] = useState<Meal[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -34,7 +35,7 @@ function MealList({ onSelect }: MealListProps) {
         return () => {
             ignore = true
         }
-        }        , [])
+        }, [refreshKey])
 
     if (loading) {
         return <p>Lade Mahlzeiten ...</p>
