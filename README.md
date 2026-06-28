@@ -57,10 +57,10 @@ konsumiert die REST-API des Spring-Boot-Backends, das die Daten in einer relatio
 Datenbank speichert und zur Erweiterung die externe Open Food Facts-API aufruft.
 
 ```
-┌──────────┐    REST    ┌──────────────┐   REST   ┌────────────────┐
+┌──────────┐    REST    ┌──────────────┐   REST   ┌─────────────────┐
 │ FRONTEND │ ◄────────► │   BACKEND    │ ◄──────► │ OPEN FOOD FACTS │
 │ (React)  │            │ (Spring Boot)│          │  (externe API)  │
-└──────────┘            │      │       │          └────────────────┘
+└──────────┘            │      │       │          └─────────────────┘
                         │   ┌──▼───┐   │
                         │   │  H2  │   │
                         │   └──────┘   │
