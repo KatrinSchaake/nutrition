@@ -4,9 +4,10 @@ import { getProducts, createMeal } from '../api/nutritionApi'
 
 type MealFormProps = {
     onCreated: () => void
+    productRefreshKey: number
 }
 
-function MealForm({ onCreated }: MealFormProps) {
+function MealForm({ onCreated, productRefreshKey }: MealFormProps) {
     // Produkte für Auswahl-Dropdowns
     const [products, setProducts] = useState<Product[]>([])
 
@@ -18,7 +19,7 @@ function MealForm({ onCreated }: MealFormProps) {
     const [submitting, setSubmitting] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
-    // Produkte einmal laden
+    // Produkte laden - wenn productRefreshKey sich ändert (z.B. nach Barcode-Import)
     useEffect(() => {
         let ignore = false
         getProducts()
@@ -31,7 +32,7 @@ function MealForm({ onCreated }: MealFormProps) {
         return () => {
             ignore = true
         }
-    }, [])
+    }, [productRefreshKey])
 
     // eine leere Position hinzufügen
     function addItem() {
@@ -81,6 +82,7 @@ function MealForm({ onCreated }: MealFormProps) {
                 <input
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
+                    placeholder="z.B. Frühstück, Mittag, Getränk"
                     required
                 />
             </label>
@@ -90,6 +92,7 @@ function MealForm({ onCreated }: MealFormProps) {
                 <input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                    placeholder="z.B. Kräuterquark mit Brötchen"
                     required
                 />
             </label>
@@ -110,10 +113,11 @@ function MealForm({ onCreated }: MealFormProps) {
                     </select>
 
                     <input
-                        type="number"
-                        value={item.amountGrams}
+                        type="text"
+                        inputMode="decimal"
+                        value={item.amountGrams === 0 ? '' : item.amountGrams}
                         onChange={(e) => updateItem(index, 'amountGrams', Number(e.target.value))}
-                        placeholder="Gramm"
+                        placeholder="Menge in Gramm, z.B. 125"
                     />
 
                     <button type="button" onClick={() => removeItem(index)}>
