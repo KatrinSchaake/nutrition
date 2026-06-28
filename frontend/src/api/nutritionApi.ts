@@ -31,3 +31,15 @@ export function createMeal(meal: MealInput): Promise<Meal> {
         body: JSON.stringify(meal),
     }).then((res) => handle<Meal>(res))
 }
+
+// Produkt bei Open Food Facts nachschlagen (ohne Speichern)
+export function lookupBarcode(code: string): Promise<Product> {
+    return fetch(`${BASE}/barcode/${code}`).then((res) => handle<Product>(res))
+}
+
+// Produkt per Barcode in die DB importieren
+export function importBarcode(code: string): Promise<Product> {
+    return fetch(`${BASE}/barcode/${code}/import`, {
+        method: 'POST',
+    }).then((res) => handle<Product>(res))
+}
