@@ -1,15 +1,165 @@
+/* ===== Toskana-Palette ===== */
+:root {
+  --terracotta: #c75d3a;
+  --terracotta-dark: #a84a2c;
+  --olive: #6b7a3b;
+  --olive-dark: #55622f;
+  --cream: #faf4e8;
+  --card: #fffdf7;
+  --ink: #3a3226;
+  --muted: #8a7d6a;
+  --border: #e5ddc8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+}
+
 .app {
   max-width: 800px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 1.5rem;
   font-family: system-ui, sans-serif;
+}
+
+/* ===== Header ===== */
+header {
+  text-align: center;
+  margin-bottom: 1.5rem;
 }
 
 header h1 {
   margin-bottom: 0.25rem;
+  color: var(--terracotta-dark);
+  font-size: 2rem;
 }
 
-/* Mahlzeiten-Liste */
+header p {
+  color: var(--olive-dark);
+  font-style: italic;
+  margin-top: 0;
+}
+
+h2 {
+  color: var(--terracotta-dark);
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 0.3rem;
+}
+
+/* ===== Karten allgemein ===== */
+.meal-form,
+.product-form,
+.barcode-import,
+.meal-detail {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 2px 6px rgba(122, 90, 50, 0.08);
+}
+
+.meal-form h3,
+.product-form h3,
+.barcode-import h3 {
+  margin-top: 0;
+  color: var(--olive-dark);
+}
+
+/* ===== Formulare ===== */
+.meal-form label,
+.product-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.85rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.meal-form input,
+.product-form input,
+.barcode-import input,
+.meal-form select {
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #fff;
+  font-weight: normal;
+}
+
+.meal-form input:focus,
+.product-form input:focus,
+.barcode-import input:focus,
+.meal-form select:focus {
+  outline: none;
+  border-color: var(--olive);
+  box-shadow: 0 0 0 3px rgba(107, 122, 59, 0.15);
+}
+
+.num-input {
+  width: 7rem;
+}
+
+.form-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+/* ===== Buttons ===== */
+button {
+  font-family: inherit;
+}
+
+.meal-form button,
+.product-form button,
+.barcode-import button {
+  padding: 0.5rem 1rem;
+  margin-top: 0.25rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--terracotta);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.meal-form button:hover,
+.product-form button:hover,
+.barcode-import button:hover {
+  background: var(--terracotta-dark);
+}
+
+.meal-form button:disabled,
+.product-form button:disabled,
+.barcode-import button:disabled {
+  background: var(--muted);
+  cursor: not-allowed;
+}
+
+/* kleinere Neben-Buttons (Position entfernen) */
+.form-item button {
+  background: transparent;
+  color: var(--terracotta-dark);
+  padding: 0.3rem 0.5rem;
+  font-size: 1.1rem;
+}
+
+.form-item button:hover {
+  background: rgba(199, 93, 58, 0.1);
+}
+
+/* ===== Mahlzeiten-Liste ===== */
 .meal-list {
   list-style: none;
   padding: 0;
@@ -18,41 +168,55 @@ header h1 {
 .meal-item-button {
   width: 100%;
   text-align: left;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: white;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
   cursor: pointer;
   margin-bottom: 0.5rem;
+  transition: background 0.15s, transform 0.1s;
+  font-size: 1rem;
+  color: var(--ink);
 }
 
 .meal-item-button:hover {
-  background: #f5f5f5;
+  background: #fff6e3;
+  transform: translateX(2px);
 }
 
-/* Detailansicht */
-.meal-detail {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-top: 1rem;
-}
-
+/* ===== Detailansicht ===== */
 .meal-category {
-  color: #666;
+  color: var(--muted);
   font-size: 0.9rem;
 }
 
 .meal-totals {
   display: flex;
-  gap: 1rem;
-  margin: 0.75rem 0;
+  gap: 1.25rem;
+  margin: 0.85rem 0;
+  flex-wrap: wrap;
 }
 
 .total-protein {
   font-weight: bold;
+  color: var(--olive-dark);
+}
+
+/* ===== Barcode-Vorschau ===== */
+.barcode-preview {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.85rem;
+  margin-top: 0.75rem;
+}
+
+.per-100g {
+  color: var(--muted);
+  font-size: 0.85rem;
 }
 
 .error {
-  color: #a00;
+  color: #b53a2a;
+  font-weight: 600;
 }

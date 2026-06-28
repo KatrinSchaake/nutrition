@@ -45,3 +45,11 @@ export interface MealInput {
     name: string
     items: MealItemInput[]
 }
+export interface ProductInput {
+    barcode: string
+    name: string
+    brandId: number | null
+    caloriesKcal: number
+    protein: number
+    carbs: number
+}

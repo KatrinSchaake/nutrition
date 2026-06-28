@@ -4,12 +4,15 @@ import { getMeal } from './api/nutritionApi'
 import MealList from './components/MealList'
 import MealDetail from './components/MealDetail'
 import MealForm from './components/MealForm'
+import BarcodeImport from './components/BarcodeImport'
+import ProductForm from './components/ProductForm'
 import './App.css'
 
 function App() {
     const [selectedId, setSelectedId] = useState<number | null>(null)
     const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null)
     const [refreshKey, setRefreshKey] = useState(0)
+    const [productRefreshKey, setProductRefreshKey] = useState(0)
 
     // Wenn sich Auswahl ändert: die Detail-Daten laden
     useEffect(() => {
@@ -30,9 +33,13 @@ function App() {
         }
     }, [selectedId])
 
-    // Wird nach Anlegen aufgerufen: Liste neu laden
+    // wird nach Anlegen aufgerufen: Liste neu laden
     function handleCreated() {
         setRefreshKey((k) => k + 1)
+    }
+    // wird nach Barcode-Import aufgerufen: Profuktlist in Formular neu laden
+    function handleImport() {
+        setProductRefreshKey((k) => k + 1)
     }
 
     return (
@@ -42,7 +49,9 @@ function App() {
                 <p>Die Proteine im Blick</p>
             </header>
             <main>
-                <MealForm onCreated={handleCreated} />
+                <BarcodeImport onImported={handleImport} />
+                <ProductForm onCreated={handleImport} />
+                <MealForm onCreated={handleCreated} productRefreshKey={productRefreshKey} />
 
                 <h2>Meine Mahlzeiten</h2>
                 <MealList onSelect={setSelectedId} refreshKey={refreshKey} />
