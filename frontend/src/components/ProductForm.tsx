@@ -66,7 +66,7 @@ function ProductForm({ onCreated }: ProductFormProps) {
                 <input
                     value={barcode}
                     onChange={(e) => setBarcode(e.target.value)}
-                    placeholder="leer lassen, wenn keiner vorhanden"
+                    placeholder="optional"
                 />
             </label>
 

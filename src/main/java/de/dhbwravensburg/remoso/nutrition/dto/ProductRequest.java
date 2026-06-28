@@ -8,7 +8,7 @@ import lombok.Data;
  * Katrin Schaake, TIA25, Samstag, 09.05.2026, Version: 0.1
  */
 public record ProductRequest(
-		@NotBlank(message = "Barcode is required") String barcode,
+		String barcode,
 		@NotBlank(message = "Product name is required") String name,
 		Long brandId,			// nur Referenz, nicht die ganze Brand
 

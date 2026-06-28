@@ -50,7 +50,7 @@ function App() {
             </header>
             <main>
                 <BarcodeImport onImported={handleImport} />
-                <ProductForm onCreated={handleCreated} />
+                <ProductForm onCreated={handleImport} />
                 <MealForm onCreated={handleCreated} productRefreshKey={productRefreshKey} />
 
                 <h2>Meine Mahlzeiten</h2>
