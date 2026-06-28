@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react"
-import type { Meal} from "../types.ts"
+import type { Meal} from "../types"
+import { getMeals } from "../api/nutritionApi"
 
-function MealList() {
+type MealListProps = {
+    onSelect: (id: number) => void
+}
+
+function MealList({ onSelect }: MealListProps) {
     const [meals, setMeals] = useState<Meal[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -9,33 +14,27 @@ function MealList() {
     useEffect(() => {
         let ignore = false
 
-        async function load() {
-            try {
-                setLoading(true)
-                const response = await fetch('/api/meals')
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`)
-                }
-                const data: Meal[] = await response.json()
+        getMeals()
+            .then((data) => {
                 if (!ignore) {
                     setMeals(data)
                     setError(null)
                 }
-            } catch (error) {
+            })
+            .catch((error) => {
                 if (!ignore) {
-                    setError(error instanceof Error ? error.message : 'Unbekannter Fehler')
+                    setError(error instanceof Error ? error.message : 'Da ist was schief gelaufen')
                 }
-            } finally {
+            })
+            .finally(() => {
                 if (!ignore) {
                     setLoading(false)
                 }
-            }
-        }
-        load()
+            })
         return () => {
             ignore = true
         }
-    }, [])
+        }        , [])
 
     if (loading) {
         return <p>Lade Mahlzeiten ...</p>
@@ -48,8 +47,10 @@ function MealList() {
         <ul className="meal-list">
             {meals.map((meal) => (
                 <li key={meal.id}>
-                    <strong>{meal.name}</strong> ({meal.category}){' '}
-                    - {meal.totalProtein.toFixed(1)} g Protein
+                    <button className="meal-item-button" onClick={() => onSelect(meal.id)}>
+                        <strong>{meal.name}</strong> ({meal.category}){' '}
+                        - {meal.totalProtein.toFixed(1)} g Protein
+                    </button>
                 </li>
             ))}
         </ul>
