@@ -1,4 +1,4 @@
-### GET alle Brands (3 als seed)
+### GET alle Brands
 GET http://localhost:8080/api/brands
 
 ### GET eine Brand byId 2
@@ -11,7 +11,7 @@ Content-Type: application/json
 { "name": "Müller", "countries": "Deutschland" }
 
 ### PUT neue Brand direkt mal updaten
-PUT http://localhost:8080/api/brands/4
+PUT http://localhost:8080/api/brands/5
 Content-Type: application/json
 
 { "name": "Müller Milch", "countries": "Deutschland" }
@@ -43,7 +43,7 @@ Content-Type: application/json
 }
 
 
-### POST Brand Franziskaner anlegen (Id 5)
+### POST Brand Franziskaner anlegen (Id 6)
 POST http://localhost:8080/api/brands
 Content-Type: application/json
 

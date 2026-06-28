@@ -4,7 +4,7 @@ Eine REST-API zum Erfassen von Lebensmitteln und Mahlzeiten mit automatischer
 Nährwertberechnung. Produkte können per Barcode aus der externen
 **Open Food Facts**-API importiert werden.
 
-Projektaufgabe Webapplikation in *WebEngineering 2*, DHBW Ravensburg 
+Projektaufgabe Webapplikation in *WebEngineering 2*, DHBW Ravensburg
 Campus Friedrichshafen (TIA25)
 
 ---
@@ -13,7 +13,7 @@ Campus Friedrichshafen (TIA25)
 
 Eine ausreichende Eiweißzufuhr ist beim Sport und mit zunehmendem Alter wichtig,
 gerät im Alltag aber leicht aus dem Blick. Der Nutrition Tracker rechnet pro
-Mahlzeit das enthaltene Protein aus – damit ich täglich sehe, wo man steht;
+Mahlzeit das enthaltene Protein aus – damit man täglich sieht, wo man steht.
 Kalorien und Kohlenhydrate bilden eine sinnvolle Zusatzinfo.
 
 ---
@@ -45,21 +45,22 @@ Kalorien und Kohlenhydrate bilden eine sinnvolle Zusatzinfo.
 - **Globale Fehlerbehandlung** mit sinnvollen HTTP-Statuscodes im
   Problem-Detail-Format (RFC 9457)
 - **Volltextsuche** nach Name (case-insensitive) für Brands, Produkte und Mahlzeiten
+- **React-Frontend** mit Mahlzeiten-Liste, Detailansicht und Formular zum Anlegen
 - **OpenAPI/Swagger**-Dokumentation der gesamten API
 
 ---
 
 ## Architektur
 
-Die Anwendung folgt der vorgegebenen Drei-Schichten-Architektur. Aktuell ist das
-Backend inklusive Datenbank und Drittanbieter-Anbindung umgesetzt; das React-Frontend
-konsumiert die hier dokumentierte REST-API.
+Die Anwendung folgt der vorgegebenen Drei-Schichten-Architektur: Ein React-Frontend
+konsumiert die REST-API des Spring-Boot-Backends, das die Daten in einer relationalen
+Datenbank speichert und zur Erweiterung die externe Open Food Facts-API aufruft.
 
 ```
-┌──────────┐    REST    ┌──────────────┐   REST   ┌─────────────────┐
+┌──────────┐    REST    ┌──────────────┐   REST   ┌────────────────┐
 │ FRONTEND │ ◄────────► │   BACKEND    │ ◄──────► │ OPEN FOOD FACTS │
 │ (React)  │            │ (Spring Boot)│          │  (externe API)  │
-└──────────┘            │      │       │          └─────────────────┘
+└──────────┘            │      │       │          └────────────────┘
                         │   ┌──▼───┐   │
                         │   │  H2  │   │
                         │   └──────┘   │
@@ -111,15 +112,16 @@ die anteiligen Nährwerte. Eine `Meal` summiert die Werte all ihrer `MealItem`s.
 
 | Komponente       | Technologie                                  |
 |------------------|----------------------------------------------|
-| Sprache          | Java 21                                       |
+| Sprache (Backend)| Java 21                                       |
 | Framework        | Spring Boot 4.0.5                             |
 | Persistenz       | Spring Data JPA + Hibernate                   |
-| Datenbank        | H2 (In-Memory)                                |
+| Datenbank        | H2 (datei-basiert, lokal)                     |
 | Validierung      | Spring Boot Starter Validation (Jakarta Bean Validation) |
 | API-Doku         | springdoc-openapi (Swagger UI)               |
 | Boilerplate      | Lombok                                        |
 | Build-Tool       | Maven (mit Maven Wrapper)                     |
 | Tests            | JUnit 5, Spring Boot Test, Mockito           |
+| Frontend         | React + Vite + TypeScript                     |
 
 ---
 
@@ -149,33 +151,55 @@ Ist ein Barcode bei Open Food Facts nicht vorhanden, antwortet die eigene API mi
 
 ## Lokales Starten
 
+Backend und Frontend laufen getrennt: Das Backend auf Port 8080, das Frontend auf
+Port 5173. Beide müssen gleichzeitig laufen.
+
 ### Voraussetzungen
 
 - **JDK 21** (oder neuer)
+- **Node.js 20** (oder neuer) und npm
 - **Git**
 - Kein separates Maven nötig – der Maven Wrapper (`mvnw`) ist im Repository enthalten.
 
-### Schritte
+### 1. Repository klonen
 
 ```bash
-# 1. Repository klonen
 git clone https://github.com/KatrinSchaake/nutrition.git
 cd nutrition
+```
 
-# 2. Anwendung starten
-#    Windows:
+### 2. Backend starten
+
+```bash
+# Windows:
 mvnw.cmd spring-boot:run
-#    Linux / macOS:
+# Linux / macOS:
 ./mvnw spring-boot:run
 ```
 
-Beim Start legt ein `DataInitializer` automatisch Beispiel-Daten an
-(einige Marken, Produkte und Mahlzeiten), sofern die Datenbank leer ist.
+Beim ersten Start legt ein `DataInitializer` Beispiel-Daten an (einige Marken,
+Produkte und Mahlzeiten), sofern die Datenbank leer ist. Das Backend läuft auf
+`http://localhost:8080`.
+
+### 3. Frontend starten
+
+In einem **zweiten** Terminal:
+
+```bash
+cd frontend
+npm install      # nur beim ersten Mal nötig
+npm run dev
+```
+
+Das Frontend läuft auf `http://localhost:5173`. Anfragen an `/api` werden über den
+Vite-Dev-Proxy an das Backend (Port 8080) weitergeleitet – daher ist keine
+CORS-Konfiguration nötig.
 
 ### Zugriffspunkte
 
 | Was              | URL                                            |
 |------------------|------------------------------------------------|
+| Frontend         | `http://localhost:5173`                        |
 | API-Basis        | `http://localhost:8080/api`                    |
 | Swagger UI       | `http://localhost:8080/swagger-ui.html`        |
 | Health-Check     | `http://localhost:8080/api/health`             |
@@ -183,12 +207,12 @@ Beim Start legt ein `DataInitializer` automatisch Beispiel-Daten an
 
 **H2-Konsole** – Anmeldedaten:
 
-- JDBC URL: `jdbc:h2:mem:nutrition`
-- Benutzer: `SA`
+- JDBC URL: `jdbc:h2:file:./data/nutrition`
+- Benutzer: `sa`
 - Passwort: *(leer)*
 
-> Hinweis: Die H2-Datenbank ist In-Memory. Beim Neustart der Anwendung gehen alle
-> Daten verloren und die Beispiel-Daten werden neu angelegt.
+> Hinweis: Die H2-Datenbank wird datei-basiert im Ordner `data/` gespeichert und
+> bleibt über Neustarts hinweg erhalten.
 
 ---
 
@@ -283,6 +307,14 @@ src/main/java/de/dhbwravensburg/remoso/nutrition/
 ├── model/         JPA-Entitäten
 ├── repository/    Spring-Data-JPA-Repositories
 └── service/       Geschäftslogik
+
+frontend/
+├── src/
+│   ├── api/         Typisierte API-Schicht (fetch-Aufrufe ans Backend)
+│   ├── components/  React-Komponenten (MealList, MealDetail, MealForm)
+│   ├── types.ts     TypeScript-Typen (Pendant zu den Backend-DTOs)
+│   └── App.tsx      Wurzel-Komponente
+└── vite.config.ts   Vite-Konfiguration inkl. Dev-Proxy
 ```
 
 ---
@@ -301,4 +333,3 @@ Vielen Dank an die Open-Food-Facts-Community für die Bereitstellung dieser offe
 ## Autorin
 
 Katrin Schaake · TIA25 · DHBW Ravensburg Campus Friedrichshafen
-
